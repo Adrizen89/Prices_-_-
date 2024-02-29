@@ -24,6 +24,7 @@ def write_to_excel(path, ZLME_data, EURX_data, log_function):
                 value = data[1]
                 new_row = ['ZLME', date, value.replace(',', '.'), 'USD', 'EUR']
                 sheet.append(new_row)
+                log_function(new_row)
     except Exception as e:
         log_function(f'Erreur lors de l\'écriture dans la feuille ZLME : {e}')
         return

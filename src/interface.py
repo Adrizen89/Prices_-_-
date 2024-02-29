@@ -20,7 +20,7 @@ class Application(tk.Tk):
         self.resizable(False, False)
         
         self.style = ThemedStyle(self)
-        self.style.set_theme("arc")  # Choisissez le thème que vous préférez
+        self.style.set_theme("arc")
         
         self.create_widgets()
 
@@ -36,7 +36,7 @@ class Application(tk.Tk):
          # Configure la fenêtre principale pour s'adapter dynamiquement
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=4)
-        self.grid_rowconfigure(0, weight=1)  # Donne un poids à la ligne pour qu'elle s'adapte
+        self.grid_rowconfigure(0, weight=1)
         
         # Création des cadres principaux pour la division gauche et droite
         left_frame = ttk.Frame(self)
@@ -49,8 +49,8 @@ class Application(tk.Tk):
         left_frame.grid_rowconfigure(0, weight=1)
         left_frame.grid_columnconfigure(0, weight=1)
         
-        right_frame.grid_rowconfigure(0, weight=1)  # Permet au contenu de s'étendre verticalement
-        for i in range(5):  # S'assurer que tous les éléments de la partie droite peuvent s'étendre
+        right_frame.grid_rowconfigure(0, weight=1)
+        for i in range(5):
             right_frame.grid_rowconfigure(i, weight=1)
         
         self.create_left_side(left_frame)
@@ -112,6 +112,8 @@ class Application(tk.Tk):
         if path:
             # Afficher le chemin choisi (optionnel)
             print("Chemin sélectionné:", path)
+            self.path_entry.delete(0, tk.END)
+            self.path_entry.insert(0, path)
             
             # Sauvegarder le chemin dans config.ini
             config = configparser.ConfigParser()
@@ -119,6 +121,7 @@ class Application(tk.Tk):
             with open('config.ini', 'w') as configfile:
                 config.write(configfile)
             messagebox.showinfo("Information", "Chemin modifié.")
+            self.log(f"Chemin du fichier Excel mis à jour : {path}")
 
     def open_path(self):
         try:
@@ -127,9 +130,10 @@ class Application(tk.Tk):
         except subprocess.CalledProcessError as e:
             self.log('Fichier non trouvé.')
     def launch_program(self):
-        # Vérifiez l'état de la checkbox pour déterminer les dates à utiliser
-        if self.use_date_range.get():  # Correction pour l'utilisation de get() avec BooleanVar
-            start_date = self.date_from_entry.get_date()  # Correction pour récupérer la date
+
+        # Vérifier l'état de la checkbox pour déterminer les dates à utiliser
+        if self.use_date_range.get():
+            start_date = self.date_from_entry.get_date()
             end_date = self.date_to_entry.get_date()
         else:
             start_date = end_date = datetime.today().date()
@@ -143,7 +147,6 @@ class Application(tk.Tk):
         # Scraping EURX
         result_eurx = EURX_scrap(start_date, end_date)
         if isinstance(result_eurx, str):
-            self.log(result_eurx)
             self.log(f"Erreur EURX: {result_eurx}")
             return
 
@@ -162,12 +165,7 @@ class Application(tk.Tk):
     def log(self, message):
         if isinstance(message, list):
             message = ' '.join(map(str, message))
-        # Affichez le message dans la console ou dans un widget de log dans votre interface
+        # Afficher le message dans la console ou dans un widget de log dans votre interface
         print(message)
         self.log_text.insert(tk.END, message + "\n")
         self.log_text.see(tk.END)
-
-
-if __name__ == "__main__":
-    app = Application()
-    app.mainloop()
