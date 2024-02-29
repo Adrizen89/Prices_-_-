@@ -60,6 +60,7 @@ class Application(tk.Tk):
         # Configuration pour les logs dans la partie gauche
         self.log_text = scrolledtext.ScrolledText(frame, font=('Arial', 10), background="white")
         self.log_text.pack(expand=True, fill="both")
+        self.log_text.config(state="disabled")
 
     def create_right_side(self, frame):
         
@@ -76,6 +77,7 @@ class Application(tk.Tk):
         self.path_entry = ttk.Entry(frame, font=('Arial', 10))
         self.path_entry.grid(row=1, column=0, columnspan=3,padx=5, pady=5, sticky="ew")
         self.path_entry.insert(0, self.excel_path)
+        self.path_entry.config(state="disabled")
 
         # Bouton avec texte "Modifier" pour modifier le chemin
         edit_button = ttk.Button(frame, text="Modifier", command=self.edit_path)
@@ -112,8 +114,10 @@ class Application(tk.Tk):
         if path:
             # Afficher le chemin choisi (optionnel)
             print("Chemin sélectionné:", path)
+            self.path_entry.config(state="normal")
             self.path_entry.delete(0, tk.END)
             self.path_entry.insert(0, path)
+            self.path_entry.config(state="disabled")
             
             # Sauvegarder le chemin dans config.ini
             config = configparser.ConfigParser()
@@ -125,7 +129,7 @@ class Application(tk.Tk):
 
     def open_path(self):
         try:
-            subprocess.run(["start", self.excel_path], shell=True, check=True)
+            os.startfile(self.excel_path)
             self.log('Fichier ouvert.')
         except subprocess.CalledProcessError as e:
             self.log('Fichier non trouvé.')
@@ -167,5 +171,7 @@ class Application(tk.Tk):
             message = ' '.join(map(str, message))
         # Afficher le message dans la console ou dans un widget de log dans votre interface
         print(message)
+        self.log_text.config(state="normal")
         self.log_text.insert(tk.END, message + "\n")
         self.log_text.see(tk.END)
+        self.log_text.config(state="disabled")

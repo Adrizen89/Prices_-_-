@@ -22,7 +22,7 @@ def write_to_excel(path, ZLME_data, EURX_data, log_function):
                 # Convertir la date en objet datetime et la formater comme vous le souhaitez
                 date = datetime.strptime(data[0], '%d.%m.%Y').strftime('%d.%m.%Y')
                 value = data[1]
-                new_row = ['ZLME', date, value.replace(',', '.'), 'USD', 'EUR']
+                new_row = ['ZLME', date, value, 'USD', 'EUR']
                 sheet.append(new_row)
                 log_function(new_row)
     except Exception as e:
@@ -36,7 +36,7 @@ def write_to_excel(path, ZLME_data, EURX_data, log_function):
             if isinstance(data, tuple) and len(data) >= 2:
                 date = datetime.strptime(data[0], '%d.%m.%Y').strftime('%d.%m.%Y')
                 value = data[1]
-                new_row = ['EURX', date, value.replace(',', '.'), 'USD', 'EUR']
+                new_row = ['EURX', date, value, 'USD', 'EUR']
                 sheet.append(new_row)
                 log_function(new_row)
     except Exception as e:
